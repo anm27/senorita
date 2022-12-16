@@ -1,6 +1,28 @@
-module.exports = function(api) {
+const createExpoWebpackConfigAsync = require("@expo/webpack-config");
+
+module.exports = async function (env, argv) {
+  const config = await createExpoWebpackConfigAsync(
+    {
+      ...env,
+      babel: {
+        dangerouslyAddModulePathsToTranspile: ["nativewind"],
+      },
+    },
+    argv
+  );
+
+  config.module.rules.push({
+    test: /\.css$/i,
+    use: ["postcss-loader"],
+  });
+
+  return config;
+};
+
+module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: ["babel-preset-expo"],
+    plugins: ["nativewind/babel"],
   };
 };
